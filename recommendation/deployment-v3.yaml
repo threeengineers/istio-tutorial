@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: recommendation
+    version: v3
+  name: recommendation-v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation
+      version: v3
+  template:
+    metadata:
+      labels:
+        app: recommendation
+        version: v3
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTIONS
+          value: -Xms15m -Xmx15m -Xmn15m
+        image: girikuncoro/istio-tutorial-recommendation:v3.2
+        imagePullPolicy: IfNotPresent
+        name: recommendation
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
+        - containerPort: 9779
+          name: prometheus
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 4
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 6
+          periodSeconds: 5
+          timeoutSeconds: 1
+        securityContext:
+          privileged: false
