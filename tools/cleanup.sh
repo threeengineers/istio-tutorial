@@ -15,7 +15,13 @@ do
 done
 
 serviceentries=$(kubectl get serviceentry -o name)
-for se in ${serviceentry[@]}
+for se in ${serviceentries[@]}
 do
     kubectl delete "$se"
+done
+
+authorizationpolicies=$(kubectl get authorizationpolicy -o name)
+for ap in ${authorizationpolicies[@]}
+do
+    kubectl delete "$ap"
 done

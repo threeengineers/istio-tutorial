@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: preference-viewer
+spec:
+  selector:
+    matchLabels:
+      app: preference
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/default/sa/customer"]
+    to:
+    - operation:
+        methods: ["GET"]
