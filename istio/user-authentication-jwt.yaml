@@ -1,0 +1,8 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: customer-jwt
+spec:
+  jwtRules:
+  - issuer: testing@secure.istio.io
+    jwksUri: https://raw.githubusercontent.com/threeengineers/istio-tutorial/master/tools/jwks.json
